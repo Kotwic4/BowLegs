@@ -103,3 +103,9 @@ ENV/
 
 # project files
 *.npy
+
+# database
+db.sqlite
+data/
+model/
+result/
