@@ -7,10 +7,12 @@ from flask import send_file
 from flask_restplus import Resource
 from werkzeug.utils import secure_filename
 
+import settings
 from api.api import api
 from api.serializers import picture, upload_parser
 from database import db_session
 from database.models import Picture
+from kafka import KafkaProducer
 
 log = logging.getLogger(__name__)
 
@@ -48,6 +50,12 @@ class PictureCollection(Resource):
         picture = Picture(id, file_path)
         db_session.add(picture)
         db_session.commit()
+
+        producer = KafkaProducer(bootstrap_servers=settings.KAFKA_BOOTSTRAP_SERVERS)
+        data = str.encode(picture.id)
+        producer.send(settings.KAFKA_TOPIC, data)
+        producer.flush()
+
         return picture, 201
 
 

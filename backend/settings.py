@@ -1,13 +1,10 @@
 # Flask settings
-FLASK_SERVER_NAME = 'localhost:8888'
 FLASK_DEBUG = True  # Do not use debug mode in production
-
-# Flask-Restplus settings
-RESTPLUS_SWAGGER_UI_DOC_EXPANSION = 'list'
-RESTPLUS_VALIDATE = True
-RESTPLUS_MASK_SWAGGER = False
-RESTPLUS_ERROR_404_HELP = False
+PORT = 8888
 
 # SQLAlchemy settings
-SQLALCHEMY_DATABASE_URI = 'sqlite:///db.sqlite'
-SQLALCHEMY_TRACK_MODIFICATIONS = False
+SQLALCHEMY_DATABASE_URI = 'sqlite:///data/db.sqlite'
+
+# KAFKA
+KAFKA_TOPIC = 'bow_legs'
+KAFKA_BOOTSTRAP_SERVERS = ['localhost:9092']
