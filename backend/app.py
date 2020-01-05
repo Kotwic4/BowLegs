@@ -6,7 +6,7 @@ from flask import Flask, Blueprint
 
 from api.api import api
 from api.endpoints.pictures import ns as picture_namespace
-from backend import settings
+import settings
 from database import db_session, init_db
 
 app = Flask(__name__)

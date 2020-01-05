@@ -1,25 +1,47 @@
 import logging
+import os
+from urllib.request import urlretrieve
 
 import keras
 import tensorflow as tf
 from kafka import KafkaConsumer
 
+from core.model import load_model, process_document
 from database import db_session
 from database.models import Picture, Status
-from core.model import load_model, process_document
+from settings import KAFKA_CONSUMER_GROUP, KAFKA_TOPIC, KAFKA_BOOTSTRAP_SERVERS, DATA_DIR, MODEL_JSON_PATH, \
+    MODEL_WEIGHTS_PATH, MODEL_JSON_URL, MODEL_WEIGHTS_URL
 
-KAFKA_TOPIC_NAME = 'bow_legs'
-KAFKA_CONSUMER_GROUP = 'bow_legs_worker'
-MODEL_DIR = './model'
-DATA_DIR = './data'
+logger = logging.getLogger(__name__)
 
-if __name__ == '__main__':
+def process_msg(id, model):
+    p = Picture.query.filter(Picture.id == id).one()
+    result_path = '{}/{}_result.png'.format(DATA_DIR, id)
+    result_mask_path = '{}/{}_mask.png'.format(DATA_DIR, id)
+    process_document(model, p.input_path, result_path, result_mask_path)
+    p.mask_path = result_mask_path
+    p.result_path = result_path
+    p.status = Status.DONE
+    db_session.commit()
+
+
+def download_model(path, url):
+    if not os.path.exists(path):
+        logger.info("Downloading model")
+        logger.info("Downloading {}".format(url))
+        urlretrieve(url, path)
+
+
+def check_model_files():
+    download_model(MODEL_JSON_PATH, MODEL_JSON_URL)
+    download_model(MODEL_WEIGHTS_PATH, MODEL_WEIGHTS_URL)
+
+
+def main():
     try:
-        logger = logging.getLogger(__name__)
-        logger.setLevel(logging.INFO)
         consumer = KafkaConsumer(
-            KAFKA_TOPIC_NAME,
-            bootstrap_servers=['localhost:9092'],
+            KAFKA_TOPIC,
+            bootstrap_servers=KAFKA_BOOTSTRAP_SERVERS,
             auto_offset_reset='earliest',
             enable_auto_commit=False,
             group_id=KAFKA_CONSUMER_GROUP
@@ -27,27 +49,25 @@ if __name__ == '__main__':
         session = tf.Session(graph=tf.Graph())
         with session.graph.as_default():
             keras.backend.set_session(session)
-            model_json_path = '{}/model_bk.json'.format(MODEL_DIR)
-            model_weights_path = '{}/trained_model.hdf5'.format(MODEL_DIR)
 
-            model = load_model(model_json_path, model_weights_path)
+            check_model_files()
+            model = load_model(MODEL_JSON_PATH, MODEL_WEIGHTS_PATH)
+
+            logger.info("Start listing")
 
             for msg in consumer:
                 logger.info(msg)
                 id = msg.value.decode()
                 logger.info("Start processing id : {}".format(id))
-
-                p = Picture.query.filter(Picture.id == id).one()
-                result_path = '{}/{}_result.png'.format(DATA_DIR, id)
-                result_mask_path = '{}/{}_mask.png'.format(DATA_DIR, id)
-                process_document(model, p.input_path, result_path, result_mask_path)
-                p.mask_path = result_mask_path
-                p.result_path = result_path
-                p.status = Status.DONE
-                db_session.commit()
+                process_msg(id, model)
                 consumer.commit()
-
                 logger.info("Finish processing id : {}".format(id))
+
     finally:
-        print("closing db")
+        logger.info("closing db")
         db_session.remove()
+
+
+if __name__ == '__main__':
+    logger.setLevel(logging.INFO)
+    main()
