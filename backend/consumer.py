@@ -6,7 +6,7 @@ from kafka import KafkaConsumer
 
 from database import db_session
 from database.models import Picture, Status
-from model import load_model, process_document
+from core.model import load_model, process_document
 
 KAFKA_TOPIC_NAME = 'bow_legs'
 KAFKA_CONSUMER_GROUP = 'bow_legs_worker'

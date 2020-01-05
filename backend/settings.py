@@ -1,5 +1,5 @@
 # Flask settings
-FLASK_DEBUG = True  # Do not use debug mode in production
+FLASK_DEBUG = False  # Do not use debug mode in production
 PORT = 8888
 
 # SQLAlchemy settings
