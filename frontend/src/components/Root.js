@@ -3,8 +3,9 @@ import {AppDrawer} from "./Drawer";
 import {PictureList} from "./PictureList";
 import React from "react";
 import {PicturePage} from "./PicturePage";
+import {Upload} from "./Upload";
 
-export const Root = ({data, dataDict}) => {
+export const Root = ({data, dataDict, addPictures}) => {
     return (
         <BrowserRouter>
             <AppDrawer
@@ -12,7 +13,7 @@ export const Root = ({data, dataDict}) => {
             >
                 <Switch>
                     <Route path="/upload">
-                        Upload
+                        <Upload addPictures={addPictures}/>
                     </Route>
                     <Route path="/picture/:id">
                         <PicturePage dataDict={dataDict}/>

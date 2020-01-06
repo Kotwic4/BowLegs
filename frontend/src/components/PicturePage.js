@@ -60,7 +60,7 @@ export const PictureInfo = ({picture}) => {
 
     const id = picture.id;
 
-    const completed = picture.status == "Status.DONE";
+    const completed = picture.status === "Status.DONE";
 
     const status = completed ? "Done" : "Waiting";
 
