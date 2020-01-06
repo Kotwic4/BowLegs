@@ -1,26 +1,29 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, {useEffect, useState} from 'react';
+import {get_all_pictures} from "./utils/api";
+import {Root} from "./components/Root";
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
-}
+
+const App = () => {
+    const [data, setData] = useState([]);
+    const [dataDict, setDataDict] = useState({});
+
+    useEffect(() => {
+        get_all_pictures().then(setData);
+        const interval = setInterval(() => {
+            get_all_pictures().then(setData);
+        }, 30000);
+        return () => clearInterval(interval);
+    }, []);
+
+    useEffect(() => {
+        setDataDict(data.reduce((map, obj) => {
+            map[obj.id] = obj;
+            return map;
+        }, {}));
+    }, [data]);
+
+    return <Root data={data} dataDict={dataDict}/>
+
+};
 
 export default App;
