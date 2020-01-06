@@ -36,3 +36,14 @@ export const upload_image = (file) => {
         return response.json();
     })
 };
+
+export const calc_img_compare = (id, file) => {
+    return post_image(PICTURE_RESULT_URL(id), file)
+};
+
+
+export const calc_data_compare = (id, file) => {
+    return post_image(PICTURE_MASK_URL(id), file).then((response) => {
+        return response.json();
+    })
+};

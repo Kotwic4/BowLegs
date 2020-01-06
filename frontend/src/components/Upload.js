@@ -31,6 +31,16 @@ const useStyles = makeStyles(theme => ({
         display: 'flex',
         alignItems: 'center',
     },
+    body: {
+        display: 'flex',
+        alignItems: 'center',
+        flexDirection: 'column',
+        justifyContent: 'center',
+    },
+    dropzone: {
+        maxWidth: 500,
+        minWidth: 100,
+    },
 }));
 
 export const NewPictureLink = ({picture}) => {
@@ -69,7 +79,7 @@ export const Upload = ({addPictures}) => {
     };
 
     return (
-        <>
+        <div className={classes.body}>
             {result ? <NewPictureLink picture={result}/> : ''}
             <div className={classes.root}>
                 <div className={classes.wrapper}>
@@ -87,6 +97,7 @@ export const Upload = ({addPictures}) => {
                 </div>
             </div>
             <DropzoneArea
+                className={classes.dropzone}
                 onChange={setFiles}
                 filesLimit={1}
                 acceptedFiles={['image/*']}
@@ -95,6 +106,6 @@ export const Upload = ({addPictures}) => {
                 showFileNamesInPreview={true}
                 showFileNames={true}
             />
-        </>
+        </div>
     )
 };
