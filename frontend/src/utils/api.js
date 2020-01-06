@@ -1,4 +1,4 @@
-const BACKEND_URL = "http://localhost:8888/api";
+const BACKEND_URL = process.env.API_URL || '/api' ;
 
 export const PICTURE_COLLECTION_URL = `${BACKEND_URL}/pictures`;
 export const PICTURE_SINGLE_URL = id => `${BACKEND_URL}/pictures/${id}`;

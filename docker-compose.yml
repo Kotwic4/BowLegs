@@ -44,6 +44,17 @@ services:
     depends_on:
       - kafka
 
+  ui:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "80:80"
+    environment:
+      API_URL: http://server:8888
+    depends_on:
+      - server
+
 volumes:
   db_data:
   model_data:
