@@ -8,8 +8,10 @@ from api.api import api
 from api.endpoints.pictures import ns as picture_namespace
 import settings
 from database import db_session, init_db
+from flask_cors import CORS
 
 app = Flask(__name__)
+CORS(app, resources={r"/api/*": {"origins": "*"}})
 logging_conf_path = os.path.normpath(os.path.join(os.path.dirname(__file__), 'logging.conf'))
 logging.config.fileConfig(logging_conf_path)
 log = logging.getLogger(__name__)

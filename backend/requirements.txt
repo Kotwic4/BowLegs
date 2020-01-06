@@ -9,3 +9,4 @@ sqlalchemy
 kafka-python
 flask
 flask_restplus
+flask-cors
