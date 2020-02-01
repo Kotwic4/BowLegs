@@ -1,5 +1,6 @@
 import logging
 import os
+import logging.config
 from urllib.request import urlretrieve
 
 import keras
@@ -12,7 +13,10 @@ from database.models import Picture, Status
 from settings import KAFKA_CONSUMER_GROUP, KAFKA_TOPIC, KAFKA_BOOTSTRAP_SERVERS, DATA_DIR, MODEL_JSON_PATH, \
     MODEL_WEIGHTS_PATH, MODEL_JSON_URL, MODEL_WEIGHTS_URL
 
+logging_conf_path = os.path.normpath(os.path.join(os.path.dirname(__file__), 'logging.conf'))
+logging.config.fileConfig(logging_conf_path)
 logger = logging.getLogger(__name__)
+
 
 def process_msg(id, model):
     p = Picture.query.filter(Picture.id == id).one()
@@ -26,7 +30,11 @@ def process_msg(id, model):
 
 
 def download_model(path, url):
+    logger.info("Check model in path: {}".format(path))
     if not os.path.exists(path):
+        dirname = os.path.dirname(path)
+        if not os.path.exists(dirname):
+            os.makedirs(dirname)
         logger.info("Downloading model")
         logger.info("Downloading {}".format(url))
         urlretrieve(url, path)
@@ -50,6 +58,10 @@ def main():
         with session.graph.as_default():
             keras.backend.set_session(session)
 
+            logger.setLevel(logging.DEBUG)
+
+            logger.info("Check model")
+
             check_model_files()
             model = load_model(MODEL_JSON_PATH, MODEL_WEIGHTS_PATH)
 
@@ -69,5 +81,4 @@ def main():
 
 
 if __name__ == '__main__':
-    logger.setLevel(logging.INFO)
     main()

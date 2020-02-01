@@ -38,6 +38,8 @@ services:
       dockerfile: Dockerfile-worker
     environment:
       KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+      MODEL_JSON_URL: https://github.com/Kotwic4/BowLegs/releases/download/1.1/model_bk.json
+      MODEL_WEIGHTS_URL: https://github.com/Kotwic4/BowLegs/releases/download/1.1/trained_model.hdf5
     volumes:
       - db_data:/app/data
       - model_data:/app/model

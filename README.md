@@ -59,3 +59,25 @@ User can upload multiple files, which will be added to waiting queue:
 
 One can also use swagger to better understand backend API:
 ![](documentation/swagger.png)
+
+## Usefull commands
+
+To see all docker containers:
+```
+docker ps -a
+```
+
+To stop containers from docker-compose:
+```
+docker-compose down
+```
+
+To rebuild image(for example worker):
+```
+docker-compose build -no-cache worker
+```
+
+To remove all stoped containers:
+```
+docker container prune
+```
