@@ -74,7 +74,7 @@ docker-compose down
 
 To rebuild image(for example worker):
 ```
-docker-compose build -no-cache worker
+docker-compose build --no-cache worker
 ```
 
 To remove all stoped containers:
