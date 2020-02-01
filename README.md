@@ -25,7 +25,7 @@ System is divided in few micro-services:
 To communication of our python micro-services with Kafka we used kafka-python
 * Database, were we store information about legs pictures. We used SQLAlchemy to communicate with database.
 Be default we are using SQLite, but user can easily change it to another database like PostgreSQL
-* Ml worker takes task from Kafka and then process specific images. It was 
+* Ml worker takes task from Kafka and then process specific images. It is using keras with tensorflow for machine learning prediction.
 * UI, which is Single Page created in React and enables user to interact with system. 
 * Rest backend is created in flask.
 
